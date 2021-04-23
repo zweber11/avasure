@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace AvasureQuizApp
 {
-    class Program
+    public class Program
     {
         static void Main(string[] args)
         {
@@ -15,7 +15,7 @@ namespace AvasureQuizApp
             StartQuiz();
         }
 
-        private static void StartQuiz()
+        public static void StartQuiz()
         {
             //Read in the .txt file, build out question & answer pairs.
             List<Question> questions = ReadQuestionsFile(4, "QuizQuestions");
@@ -27,13 +27,13 @@ namespace AvasureQuizApp
             DisplayScore(correctAnswerCount, questions.Count);
         }
 
-        private static void DisplayScore(int correctAnswerCount, int questionCount)
+        public static void DisplayScore(int correctAnswerCount, int questionCount)
         {
             Console.WriteLine($"You got {correctAnswerCount.ToString()} out of {questionCount.ToString()} questions correct!");
             Console.ReadLine();
         }
 
-        private static int PresentQuestions(List<Question> questions)
+        public static int PresentQuestions(List<Question> questions)
         {
             int correctAnswerCount = 0;
 
@@ -165,7 +165,5 @@ namespace AvasureQuizApp
 
             return correctAnswerObj;
         }
-
-        //TODO: Unit tests
     }
 }
