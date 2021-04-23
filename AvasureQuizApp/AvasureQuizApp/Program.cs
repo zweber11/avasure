@@ -23,7 +23,7 @@ namespace AvasureQuizApp
             //Loop through the questions, record responses.
             PresentQuestion(questions);
 
-            ////Present an overall score when the last question has been answered.
+            //Present an overall score when the last question has been answered.
             //DisplayScore();
         }
 
@@ -43,8 +43,33 @@ namespace AvasureQuizApp
                     Console.WriteLine($"{questions[i].Answers[j].AnswerNumber}. {questions[i].Answers[j].AnswerText}");
                 }
 
-                //TODO: Handle user response here. Check for valid response. If not, let the user retry.
+                //Handle user response. Check for valid response. If not, let the user retry.
                 string answer = Console.ReadLine();
+                int parsedAnswer;
+                int.TryParse(answer, out parsedAnswer);
+
+                //Error handling - failed parse, or a response greater than the possible answers.
+                if (parsedAnswer == 0 || parsedAnswer > questions[0].Answers.Count)
+                {
+                    Console.WriteLine($"Sorry - invalid response. Please try again.");
+                }
+                else
+                {
+                    //Valid response - check if the user is correct.
+                    Answer userAnswer = questions[i].Answers.Where(x => x.AnswerNumber == parsedAnswer).FirstOrDefault();
+                    Answer correctAnswer = questions[i].Answers.Where(x => x.IsCorrectAnswer).FirstOrDefault();
+
+                    if (userAnswer.IsCorrectAnswer)
+                    {
+                        //Correct answer.
+                        Console.WriteLine($"Correct! The answer was: {correctAnswer.AnswerNumber}. {correctAnswer.AnswerText}" );
+                    }
+                    else
+                    {
+                        //Incorrect answer.
+                        Console.WriteLine($"Sorry, the correct answer was: {correctAnswer.AnswerNumber}. {correctAnswer.AnswerText}");
+                    }
+                }
             }
         }
 
@@ -110,7 +135,7 @@ namespace AvasureQuizApp
                         Answer correctAnswerObj = newFoundQuestion.Answers.Where(x => x.AnswerNumber == correctAnswer).FirstOrDefault();
                         correctAnswerObj.IsCorrectAnswer = true;
 
-                        //TODO: Update the item in the List.
+                        //Update the item in the List.
                         int index = newFoundQuestion.Answers.FindIndex(x => x == correctAnswerObj);
                         newFoundQuestion.Answers[index] = correctAnswerObj;
 
