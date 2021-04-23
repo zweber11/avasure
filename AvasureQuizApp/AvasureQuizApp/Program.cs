@@ -23,18 +23,29 @@ namespace AvasureQuizApp
             //Loop through the questions, record responses.
             PresentQuestion(questions);
 
-            //Present an overall score when the last question has been answered.
-            DisplayScore();
+            ////Present an overall score when the last question has been answered.
+            //DisplayScore();
         }
 
-        private static void DisplayScore()
-        {
-            throw new NotImplementedException();
-        }
+        //private static void DisplayScore()
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         private static void PresentQuestion(List<Question> questions)
         {
-            throw new NotImplementedException();
+            for (int i = 0; i < questions.Count; i++)
+            {
+                Console.WriteLine($"({questions[i].QuestionNumber.ToString()}) {questions[i].QuestionText}");
+
+                for (int j = 0; j < questions[i].Answers.Count; j++)
+                {
+                    Console.WriteLine($"{questions[i].Answers[j].AnswerNumber}. {questions[i].Answers[j].AnswerText}");
+                }
+
+                //TODO: Handle user response here. Check for valid response. If not, let the user retry.
+                string answer = Console.ReadLine();
+            }
         }
 
         //TODO: Error handling
@@ -48,14 +59,12 @@ namespace AvasureQuizApp
             using (StreamReader sr = new StreamReader(path))
             {
                 String line;
-                bool foundQuestionLine;
 
                 while ((line = sr.ReadLine()) != null)
                 {
                     //Check for the Question text
                     if (line.StartsWith('('))
                     {
-                        foundQuestionLine = true;
                         Question newFoundQuestion = new Question();
                         newFoundQuestion.Answers = new List<Answer>();
                         string[] splitLine;
@@ -77,34 +86,33 @@ namespace AvasureQuizApp
                         //Read the next (possibleAnswers) lines - 4 responses & correct answer for this exercise, but can support other values.
                         for (int i = 0; i < possibleAnswers; i++)
                         {
-                            if (i == possibleAnswers)
-                            {
-                                //Correct answer line
-                                int correctAnswer;
-                                int.TryParse(line, out correctAnswer);
+                            //Possible response line
+                            line = sr.ReadLine();
+                            splitLine = line.Split('.');
 
-                                //Set the correctAnswer flag on the correct answer object.
-                                Answer correctAnswerObj = newFoundQuestion.Answers.Where(x => x.AnswerNumber == correctAnswer).FirstOrDefault();
-                                correctAnswerObj.IsCorrectAnswer = true;
+                            Answer newAnswer = new Answer();
 
-                                //TODO: Update the item in the List.
-                            }
-                            else
-                            {
-                                //Possible response line
-                                line = sr.ReadLine();
-                                splitLine = line.Split('.');
+                            int responseNumber;
+                            int.TryParse(splitLine[0], out responseNumber);
+                            newAnswer.AnswerNumber = responseNumber;
+                            newAnswer.AnswerText = splitLine[1].TrimStart();
 
-                                Answer newAnswer = new Answer();
-
-                                int responseNumber;
-                                int.TryParse(splitLine[0], out responseNumber);
-                                newAnswer.AnswerNumber = responseNumber;
-                                newAnswer.AnswerText = splitLine[1].TrimStart();
-
-                                newFoundQuestion.Answers.Add(newAnswer);
-                            }
+                            newFoundQuestion.Answers.Add(newAnswer);
                         }
+
+                        //TODO: Refactor into seperate method?
+                        //Correct answer line
+                        line = sr.ReadLine();
+                        int correctAnswer;
+                        int.TryParse(line, out correctAnswer);
+
+                        //Set the correctAnswer flag on the correct answer object.
+                        Answer correctAnswerObj = newFoundQuestion.Answers.Where(x => x.AnswerNumber == correctAnswer).FirstOrDefault();
+                        correctAnswerObj.IsCorrectAnswer = true;
+
+                        //TODO: Update the item in the List.
+                        int index = newFoundQuestion.Answers.FindIndex(x => x == correctAnswerObj);
+                        newFoundQuestion.Answers[index] = correctAnswerObj;
 
                         questions.Add(newFoundQuestion);
                     }
