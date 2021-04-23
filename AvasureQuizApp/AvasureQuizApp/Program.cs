@@ -21,19 +21,22 @@ namespace AvasureQuizApp
             List<Question> questions = ReadQuestionsFile(4);
 
             //Loop through the questions, record responses.
-            PresentQuestion(questions);
+            int correctAnswerCount = PresentQuestions(questions);
 
             //Present an overall score when the last question has been answered.
-            //DisplayScore();
+            DisplayScore(correctAnswerCount, questions.Count);
         }
 
-        //private static void DisplayScore()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        private static void PresentQuestion(List<Question> questions)
+        private static void DisplayScore(int correctAnswerCount, int questionCount)
         {
+            Console.WriteLine($"You got {correctAnswerCount.ToString()} out of {questionCount.ToString()} questions correct!");
+            Console.ReadLine();
+        }
+
+        private static int PresentQuestions(List<Question> questions)
+        {
+            int correctAnswerCount = 0;
+
             for (int i = 0; i < questions.Count; i++)
             {
                 Console.WriteLine($"({questions[i].QuestionNumber.ToString()}) {questions[i].QuestionText}");
@@ -44,37 +47,44 @@ namespace AvasureQuizApp
                 }
 
                 //Handle user response. Check for valid response. If not, let the user retry.
-                string answer = Console.ReadLine();
+                string answer;
                 int parsedAnswer;
-                int.TryParse(answer, out parsedAnswer);
 
-                //Error handling - failed parse, or a response greater than the possible answers.
-                if (parsedAnswer == 0 || parsedAnswer > questions[0].Answers.Count)
+                do
                 {
-                    Console.WriteLine($"Sorry - invalid response. Please try again.");
-                }
-                else
-                {
-                    //Valid response - check if the user is correct.
-                    Answer userAnswer = questions[i].Answers.Where(x => x.AnswerNumber == parsedAnswer).FirstOrDefault();
-                    Answer correctAnswer = questions[i].Answers.Where(x => x.IsCorrectAnswer).FirstOrDefault();
+                    answer = Console.ReadLine();
+                    int.TryParse(answer, out parsedAnswer);
 
-                    if (userAnswer.IsCorrectAnswer)
+                    //Failed parse, or a response greater than the possible answers.
+                    if (parsedAnswer == 0 || parsedAnswer > questions[0].Answers.Count)
                     {
-                        //Correct answer.
-                        Console.WriteLine($"Correct! The answer was: {correctAnswer.AnswerNumber}. {correctAnswer.AnswerText}" );
+                        Console.WriteLine($"Sorry - invalid response. Please try again.");
                     }
                     else
                     {
-                        //Incorrect answer.
-                        Console.WriteLine($"Sorry, the correct answer was: {correctAnswer.AnswerNumber}. {correctAnswer.AnswerText}");
-                    }
-                }
-            }
-        }
+                        //Valid response - check if the user is correct.
+                        Answer userAnswer = questions[i].Answers.Where(x => x.AnswerNumber == parsedAnswer).FirstOrDefault();
+                        Answer correctAnswer = questions[i].Answers.Where(x => x.IsCorrectAnswer).FirstOrDefault();
 
-        //TODO: Error handling
-        //TODO: Unit tests
+                        if (userAnswer.IsCorrectAnswer)
+                        {
+                            //Correct answer.
+                            Console.WriteLine($"Correct! The answer was: {correctAnswer.AnswerNumber}. {correctAnswer.AnswerText}");
+                            correctAnswerCount++;
+                        }
+                        else
+                        {
+                            //Incorrect answer.
+                            Console.WriteLine($"Sorry, the correct answer was: {correctAnswer.AnswerNumber}. {correctAnswer.AnswerText}");
+                        }
+
+                        break;
+                    }
+                } while (true);
+            }
+
+            return correctAnswerCount;
+        }
 
         public static List<Question> ReadQuestionsFile(int possibleAnswers)
         {
@@ -146,5 +156,7 @@ namespace AvasureQuizApp
 
             return questions;
         }
+
+        //TODO: Unit tests
     }
 }
