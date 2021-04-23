@@ -18,7 +18,7 @@ namespace AvasureQuizApp
         private static void StartQuiz()
         {
             //Read in the .txt file, build out question & answer pairs.
-            List<Question> questions = ReadQuestionsFile(4);
+            List<Question> questions = ReadQuestionsFile(4, "QuizQuestions");
 
             //Loop through the questions, record responses.
             int correctAnswerCount = PresentQuestions(questions);
@@ -86,10 +86,10 @@ namespace AvasureQuizApp
             return correctAnswerCount;
         }
 
-        public static List<Question> ReadQuestionsFile(int possibleAnswers)
+        public static List<Question> ReadQuestionsFile(int possibleAnswers, string fileName)
         {
             List<Question> questions = new List<Question>();
-            string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Data\QuizQuestions.txt");
+            string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Data\" + fileName + ".txt");
 
             using (StreamReader sr = new StreamReader(path))
             {
@@ -100,17 +100,14 @@ namespace AvasureQuizApp
                     //Check for the Question text
                     if (line.StartsWith('('))
                     {
-                        Question newFoundQuestion = new Question();
-                        newFoundQuestion.Answers = new List<Answer>();
+                        Question newFoundQuestion = new Question() { Answers = new List<Answer>() };
                         string[] splitLine;
 
-                        //Split on the closed parthesis character.
+                        //Split on the closed parenthesis character.
                         splitLine = line.Split(')');
-
-                        //Set the question number.
                         int questionNumber;
 
-                        //Remove the open parthesis character.
+                        //Remove the open parenthesis character.
                         splitLine[0] = splitLine[0].Remove(0, 1);
                         int.TryParse(splitLine[0], out questionNumber);
                         newFoundQuestion.QuestionNumber = questionNumber;
@@ -121,29 +118,15 @@ namespace AvasureQuizApp
                         //Read the next (possibleAnswers) lines - 4 responses & correct answer for this exercise, but can support other values.
                         for (int i = 0; i < possibleAnswers; i++)
                         {
-                            //Possible response line
                             line = sr.ReadLine();
-                            splitLine = line.Split('.');
-
-                            Answer newAnswer = new Answer();
-
-                            int responseNumber;
-                            int.TryParse(splitLine[0], out responseNumber);
-                            newAnswer.AnswerNumber = responseNumber;
-                            newAnswer.AnswerText = splitLine[1].TrimStart();
+                            Answer newAnswer = BuildAnswerObject(line);
 
                             newFoundQuestion.Answers.Add(newAnswer);
                         }
 
-                        //TODO: Refactor into seperate method?
                         //Correct answer line
                         line = sr.ReadLine();
-                        int correctAnswer;
-                        int.TryParse(line, out correctAnswer);
-
-                        //Set the correctAnswer flag on the correct answer object.
-                        Answer correctAnswerObj = newFoundQuestion.Answers.Where(x => x.AnswerNumber == correctAnswer).FirstOrDefault();
-                        correctAnswerObj.IsCorrectAnswer = true;
+                        Answer correctAnswerObj = GetCorrectAnswer(line, newFoundQuestion.Answers);
 
                         //Update the item in the List.
                         int index = newFoundQuestion.Answers.FindIndex(x => x == correctAnswerObj);
@@ -155,6 +138,32 @@ namespace AvasureQuizApp
             }
 
             return questions;
+        }
+
+        public static Answer BuildAnswerObject(string line)
+        {
+            string[] splitLine;
+            splitLine = line.Split('.');
+
+            Answer newAnswer = new Answer();
+
+            int responseNumber;
+            int.TryParse(splitLine[0], out responseNumber);
+            newAnswer.AnswerNumber = responseNumber;
+            newAnswer.AnswerText = splitLine[1].TrimStart();
+
+            return newAnswer;
+        }
+
+        public static Answer GetCorrectAnswer(string lineData, List<Answer> answers)
+        {
+            int correctAnswer;
+            int.TryParse(lineData, out correctAnswer);
+
+            Answer correctAnswerObj = answers.Where(x => x.AnswerNumber == correctAnswer).FirstOrDefault();
+            correctAnswerObj.IsCorrectAnswer = true;
+
+            return correctAnswerObj;
         }
 
         //TODO: Unit tests
