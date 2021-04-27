@@ -11,24 +11,12 @@ namespace AvasureQuizApp.Tests
     public class ProgramTests
     {
         [TestMethod()]
-        public void StartQuizTest()
-        {
-            Assert.Fail();
-        }
-
-        [TestMethod()]
         public void DisplayScoreTest_OneCorrect()
         {
             string expectedScore = "You got 1 out of 2 questions correct!";
             string actualScore = Program.DisplayScore(1, 2);
 
             Assert.AreEqual(expectedScore, actualScore);
-        }
-
-        [TestMethod()]
-        public void PresentQuestionsTest()
-        {
-            Assert.Fail();
         }
 
         [TestMethod()]
