@@ -97,3 +97,4 @@ C:\Users\Zack\Desktop\Avasure\QuizApp\avasure\AvasureQuizApp\AvasureQuizAppTests
 C:\Users\Zack\Desktop\Avasure\QuizApp\avasure\AvasureQuizApp\AvasureQuizAppTests\obj\Debug\netcoreapp3.1\AvasureQuizAppTests.dll
 C:\Users\Zack\Desktop\Avasure\QuizApp\avasure\AvasureQuizApp\AvasureQuizAppTests\obj\Debug\netcoreapp3.1\AvasureQuizAppTests.pdb
 C:\Users\Zack\Desktop\Avasure\QuizApp\avasure\AvasureQuizApp\AvasureQuizAppTests\obj\Debug\netcoreapp3.1\AvasureQuizAppTests.genruntimeconfig.cache
+C:\Users\Zack\Desktop\Avasure\QuizApp\avasure\AvasureQuizApp\AvasureQuizAppTests\bin\Debug\netcoreapp3.1\Data\InvalidQuizQuestions.txt

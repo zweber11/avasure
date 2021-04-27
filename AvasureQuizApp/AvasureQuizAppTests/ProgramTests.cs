@@ -17,9 +17,12 @@ namespace AvasureQuizApp.Tests
         }
 
         [TestMethod()]
-        public void DisplayScoreTest()
+        public void DisplayScoreTest_OneCorrect()
         {
-            Assert.Fail();
+            string expectedScore = "You got 1 out of 2 questions correct!";
+            string actualScore = Program.DisplayScore(1, 2);
+
+            Assert.AreEqual(expectedScore, actualScore);
         }
 
         [TestMethod()]
@@ -29,9 +32,42 @@ namespace AvasureQuizApp.Tests
         }
 
         [TestMethod()]
-        public void ReadQuestionsFileTest()
+        public void ReadQuestionsFileTest_ValidFile()
         {
-            Assert.Fail();
+            List<Question> questions = new List<Question>() { 
+                new Question { 
+                    QuestionNumber = 1, 
+                    QuestionText = "The National Basketball Association is made up of how many teams?", 
+                    Answers = new List<Answer> { 
+                        new Answer { AnswerNumber = 1, AnswerText = "35", IsCorrectAnswer = false },
+                        new Answer { AnswerNumber = 2, AnswerText = "30", IsCorrectAnswer = true },
+                        new Answer { AnswerNumber = 3, AnswerText = "20", IsCorrectAnswer = false },
+                        new Answer { AnswerNumber = 4, AnswerText = "32", IsCorrectAnswer = false },
+                    } 
+                },
+                new Question {
+                    QuestionNumber = 2,
+                    QuestionText = "What score is considered a \"Perfect Game\" in the sport of Bowling?",
+                    Answers = new List<Answer> {
+                        new Answer { AnswerNumber = 1, AnswerText = "400", IsCorrectAnswer = false },
+                        new Answer { AnswerNumber = 2, AnswerText = "100", IsCorrectAnswer = false },
+                        new Answer { AnswerNumber = 3, AnswerText = "300", IsCorrectAnswer = true },
+                        new Answer { AnswerNumber = 4, AnswerText = "200", IsCorrectAnswer = false },
+                    }
+                }
+            };
+
+            List<Question> expectedQuestions = Program.ReadQuestionsFile(4, "QuizQuestions");
+            Assert.AreEqual(questions.Count, expectedQuestions.Count);
+        }
+
+        [TestMethod()]
+        public void ReadQuestionsFileTest_InvalidFile()
+        {
+            List<Question> questions = new List<Question>() { };
+            List<Question> expectedQuestions = Program.ReadQuestionsFile(4, "InvalidQuizQuestions");
+
+            Assert.AreEqual(expectedQuestions.Count, questions.Count);
         }
 
         [TestMethod()]

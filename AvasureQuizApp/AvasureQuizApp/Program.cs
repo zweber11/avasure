@@ -24,13 +24,16 @@ namespace AvasureQuizApp
             int correctAnswerCount = PresentQuestions(questions);
 
             //Present an overall score when the last question has been answered.
-            DisplayScore(correctAnswerCount, questions.Count);
+            string score = DisplayScore(correctAnswerCount, questions.Count);
+            Console.ReadLine();
         }
 
-        public static void DisplayScore(int correctAnswerCount, int questionCount)
+        public static string DisplayScore(int correctAnswerCount, int questionCount)
         {
-            Console.WriteLine($"You got {correctAnswerCount.ToString()} out of {questionCount.ToString()} questions correct!");
-            Console.ReadLine();
+            string score = $"You got {correctAnswerCount.ToString()} out of {questionCount.ToString()} questions correct!";
+            Console.WriteLine(score);
+
+            return score;
         }
 
         public static int PresentQuestions(List<Question> questions)
